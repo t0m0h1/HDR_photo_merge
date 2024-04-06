@@ -46,3 +46,7 @@ if __name__ == "__main__":
 
     # Save tonemapped image
     cv2.imwrite("output_hdr.jpg", (ldr * 255).astype(np.uint8))
+
+
+
+#  next add some error handling and check if things are working correctly
