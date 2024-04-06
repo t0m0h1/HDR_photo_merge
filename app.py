@@ -7,7 +7,7 @@ def extract_exposure_times(image_paths):
     for path in image_paths:
         with Image.open(path) as img:
             exif_data = img._getexif()
-            exposure_time = exif_data[33434] / exif_data[33437]  # Extracting exposure time from EXIF data
+            exposure_time = float(exif_data[33434].num) / float(exif_data[33437].den)  # Extracting exposure time from EXIF data
             exposure_times.append(exposure_time)
     return np.array(exposure_times, dtype=np.float32)
 
@@ -24,8 +24,8 @@ def tonemap(hdr):
 
 if __name__ == "__main__":
     # Paths to input images
-    image_paths = ["../images/DJI0965.JPG", "/images/DJI0966.JPG", "/images/DJI0967.JPG"]
-
+    image_paths = ["images/DJI_0965.JPG", "images/DJI_0966.JPG", "images/DJI_0967.JPG"]
+    
     # Extract exposure times
     exposure_times = extract_exposure_times(image_paths)
 
