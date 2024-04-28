@@ -27,12 +27,12 @@ def merge_images(images, exposure_times):
         sys.exit(1)
 
 
-
-def tonemap(hdr, intensity=0.01):
+def tonemap(hdr, tonemap_algorithm=cv2.TonemapMantiuk, parameters=None):
     try:
-        tonemap = cv2.createTonemapReinhard()
-        tonemap.setIntensity(intensity)  # Adjust the intensity value (global exposure)
-        ldr = tonemap.process(hdr)
+        if parameters is None:
+            parameters = {}
+        tonemapper = tonemap_algorithm(**parameters)
+        ldr = tonemapper.process(hdr)
         ldr = np.clip(ldr, 0, 1)
         return ldr
     except cv2.error as e:
@@ -40,13 +40,9 @@ def tonemap(hdr, intensity=0.01):
         sys.exit(1)
 
 
-
-
-
-
 if __name__ == "__main__":
     # Paths to input images
-    image_paths = ["images/DJI_0965.JPG", "images/DJI_0966.JPG", "images/DJI_0967.JPG"]
+    image_paths = ["images/img1.JPG", "images/img2.JPG", "images/img3.JPG"]
 
     # Extract exposure times
     exposure_times = extract_exposure_times(image_paths)
@@ -57,8 +53,16 @@ if __name__ == "__main__":
     # Merge images
     hdr = merge_images(images, exposure_times)
 
-    # Tonemap HDR image (with adjusted intensity value for darkness)
-    ldr = tonemap(hdr, intensity=0.1)  # Adjust intensity value as needed for much darker output
+    # Tonemap HDR image with Mantiuk algorithm and fine-tuned parameters
+    tonemap_parameters = {
+        'contrast': 1.0,
+        'saturation': 1.2,
+        'brightness': 0.7
+    }
+    ldr = tonemap(hdr, tonemap_algorithm=cv2.createTonemapMantiuk, parameters=tonemap_parameters)
+
+    # Apply manual post-processing (e.g., contrast adjustment)
+    ldr = cv2.convertScaleAbs(ldr, alpha=1.2, beta=0)
 
     # Save tonemapped image
     try:
