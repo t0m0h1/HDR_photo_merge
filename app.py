@@ -38,8 +38,7 @@ def merge_images(images):
     except cv2.error as e:
         logging.error(f"Error merging images: {e}")
 
-
-def tonemap(hdr, tonemap_algorithm=cv2.createTonemapDrago, parameters=None):
+def tonemap(hdr, tonemap_algorithm=cv2.createTonemapReinhard, parameters=None):
     """Tonemap HDR image."""
     try:
         if parameters is None:
@@ -50,6 +49,7 @@ def tonemap(hdr, tonemap_algorithm=cv2.createTonemapDrago, parameters=None):
     except cv2.error as e:
         logging.error(f"Error tonemapping HDR image: {e}")
         raise
+
 
 if __name__ == "__main__":
     exposure_times = extract_exposure_times(IMAGE_PATHS)
@@ -71,8 +71,9 @@ if __name__ == "__main__":
     hdr = merge_images(images)
 
     tonemap_parameters = {
-        'gamma': 2.5,     # Adjust gamma for contrast
-        'saturation': 1.0, # Adjust saturation for color intensity
+        'intensity': -1.5,     # Adjust intensity for overall brightness
+        'light_adapt': 0.0,    # Adjust light adaptation for brightness of light areas
+        'color_adapt': 0.0,    # Adjust color adaptation for saturation of colors
     }
 
     ldr = tonemap(hdr, parameters=tonemap_parameters)
