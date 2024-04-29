@@ -72,8 +72,8 @@ if __name__ == "__main__":
 
     tonemap_parameters = {
         'intensity': -1.5,     # Adjust intensity for overall brightness
-        'light_adapt': 0.0,    # Adjust light adaptation for brightness of light areas
-        'color_adapt': 0.0,    # Adjust color adaptation for saturation of colors
+        'light_adapt': -0.5,    # Adjust light adaptation for brightness of light areas
+        'color_adapt': 0.5,    # Adjust color adaptation for saturation of colors
     }
 
     ldr = tonemap(hdr, parameters=tonemap_parameters)
